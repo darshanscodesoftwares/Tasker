@@ -1,0 +1,88 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import "tailwindcss";
+@import "react-grid-layout/css/styles.css";
+@import "react-resizable/css/styles.css";
+
+@theme {
+  --font-sans: "Inter", sans-serif;
+  --color-primary: #6e8bff;
+  --color-accent: #8b5cf6;
+  --color-bg-start: #0f0f1a;
+  --color-bg-end: #1a1a2e;
+  --color-glass: rgba(255, 255, 255, 0.05);
+  --color-glass-border: rgba(255, 255, 255, 0.1);
+  --color-glass-hover: rgba(255, 255, 255, 0.08);
+}
+
+/* Base styles */
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: linear-gradient(135deg, var(--color-bg-start), var(--color-bg-end));
+  color: #e2e8f0;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Radial glow behind hero */
+.hero-glow {
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 400px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(110, 139, 255, 0.25) 0%,
+    rgba(139, 92, 246, 0.15) 40%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Glass card */
+.glass {
+  background: var(--color-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-glass-border);
+  border-radius: 20px;
+}
+
+.glass:hover {
+  background: var(--color-glass-hover);
+}
+
+/* Soft glow on focus */
+input:focus,
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(110, 139, 255, 0.4);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+/* react-grid-layout overrides */
+.react-grid-item.react-grid-placeholder {
+  background: rgba(110, 139, 255, 0.2) !important;
+  border-radius: 20px;
+  border: 2px dashed rgba(110, 139, 255, 0.4) !important;
+}
+
+.react-grid-item > .react-resizable-handle::after {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
