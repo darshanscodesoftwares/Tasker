@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { ResponsiveGridLayout, useContainerWidth } from "react-grid-layout";
 import LinkInputWidget from "./LinkInputWidget";
 import SummaryWidget from "./SummaryWidget";
@@ -45,7 +45,19 @@ export default function Workspace({
 }) {
   const [layouts, setLayouts] = useState(loadLayouts);
   const containerRef = useRef(null);
-  const width = useContainerWidth(containerRef);
+
+  // Initialize width to window width (fallback), then measure from container
+  const measuredWidth = useContainerWidth(containerRef);
+  const [width, setWidth] = useState(() =>
+    typeof window !== "undefined" ? Math.min(window.innerWidth - 32, 1280) : 1024
+  );
+
+  // Update width when container is measured (useContainerWidth updates)
+  useEffect(() => {
+    if (measuredWidth > 0) {
+      setWidth(measuredWidth);
+    }
+  }, [measuredWidth]);
 
   const handleLayoutChange = useCallback((_layout, allLayouts) => {
     setLayouts(allLayouts);
@@ -58,40 +70,38 @@ export default function Workspace({
 
   return (
     <div ref={containerRef} className="mx-auto max-w-7xl">
-      {width > 0 && (
-        <ResponsiveGridLayout
-          width={width}
-          layouts={layouts}
-          breakpoints={{ lg: 1024, md: 768, sm: 0 }}
-          cols={{ lg: 12, md: 12, sm: 12 }}
-          rowHeight={60}
-          margin={[16, 16]}
-          containerPadding={[16, 0]}
-          onLayoutChange={handleLayoutChange}
-          draggableHandle=".widget-drag-handle"
-          useCSSTransforms
-        >
-          <div key="link">
-            <WidgetWrapper>
-              <LinkInputWidget onGenerate={onGenerate} isLoading={isLoading} />
-            </WidgetWrapper>
-          </div>
-          <div key="summary">
-            <WidgetWrapper>
-              <SummaryWidget
-                summary={summary}
-                onSave={onSave}
-                isSaving={isSaving}
-              />
-            </WidgetWrapper>
-          </div>
-          <div key="history">
-            <WidgetWrapper>
-              <HistoryWidget summaries={summaries} onSelect={onSelectHistory} />
-            </WidgetWrapper>
-          </div>
-        </ResponsiveGridLayout>
-      )}
+      <ResponsiveGridLayout
+        width={width}
+        layouts={layouts}
+        breakpoints={{ lg: 1024, md: 768, sm: 0 }}
+        cols={{ lg: 12, md: 12, sm: 12 }}
+        rowHeight={60}
+        margin={[16, 16]}
+        containerPadding={[16, 0]}
+        onLayoutChange={handleLayoutChange}
+        draggableHandle=".widget-drag-handle"
+        useCSSTransforms
+      >
+        <div key="link">
+          <WidgetWrapper>
+            <LinkInputWidget onGenerate={onGenerate} isLoading={isLoading} />
+          </WidgetWrapper>
+        </div>
+        <div key="summary">
+          <WidgetWrapper>
+            <SummaryWidget
+              summary={summary}
+              onSave={onSave}
+              isSaving={isSaving}
+            />
+          </WidgetWrapper>
+        </div>
+        <div key="history">
+          <WidgetWrapper>
+            <HistoryWidget summaries={summaries} onSelect={onSelectHistory} />
+          </WidgetWrapper>
+        </div>
+      </ResponsiveGridLayout>
     </div>
   );
 }
