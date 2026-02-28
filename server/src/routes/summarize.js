@@ -27,10 +27,12 @@ router.post("/", async (req, res) => {
     // Step 1 — extract text from the conversation page
     const rawText = await extractTextFromUrl(url);
 
-    if (!rawText || rawText.length < 20) {
-      return res
-        .status(422)
-        .json({ error: "Could not extract meaningful text from the URL." });
+    if (!rawText || rawText.length < 40) {
+      return res.status(422).json({
+        error:
+          "Could not extract conversation text from the URL. " +
+          "If this is a ChatGPT share link, make sure the conversation is publicly shared.",
+      });
     }
 
     // Step 2 — generate AI summary
